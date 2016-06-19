@@ -1,3 +1,3 @@
-from batch import Batch
-from worker import Worker
-from job import Job
+from .batch import Batch
+from .worker import Worker
+from .job import Job

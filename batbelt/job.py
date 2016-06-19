@@ -32,23 +32,23 @@ class Job:
 		return self.thread
 
 	def __eq__(self, other):		# Comparison operators are needed for optional PriorityQueue
-		self.check_type_job(other)
+		self._check_type_job(other)
 		if self.priority == other.priority:
 			return True
 		return False
 
 	def __lt__(self, other):
-		self.check_type_job(other)
+		self._check_type_job(other)
 		if self.priority < other.priority:
 			return True
 		return False
 
 	def __gt__(self, other):
-		self.check_type_job(other)
+		self._check_type_job(other)
 		if self.priority > other.priority:
 			return True
 		return False
 
-	def check_type_job(self, job):
+	def _check_type_job(self, job):
 		if not isinstance(job, Job):
 			raise TypeError('job is not of type %s', Job)	

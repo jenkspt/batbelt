@@ -12,6 +12,6 @@ setup(name='batbelt',
       author_email='jenkspt@gmail.com',
       license='MIT',
       packages=['batbelt'],
-      install_requires=['threading', 'time', 'queue'],
+      install_requires=['pytest', 'requests'],
       include_package_data=True,
       zip_safe=False)

@@ -2,41 +2,39 @@ import threading
 import time
 import queue
 
-from job import Job
-from worker import Worker
+from .job import Job
+from .worker import Worker
 
 class Batch(list):
 	def __init__(self, num_threads, jobs=[], priority=False):
-		list.__init__(self, jobs)
-		if not priority:
-			self.q = queue.Queue()
-		else:
-			self.q = queue.PriorityQueue()
-
-		self += jobs
-
-		self.threads = []
-		for n in range(num_threads):
-			self.threads.append(Worker(self.q))
+		self.priority = priority
+		self.clear(jobs)
+		self._add_to_queue(jobs)
+		self._init_threads(num_threads)
 
 	def __setitem__(self, key, job):
-		self.check_type_job(job)
+		self._check_type_job(job)
 		self.q.put(job)
-		list.__setitem__(self, key, job)
+		list.__setitem__(self, inde, job)
+
+	def __getitem__(self, index):		# Returns the output of the function
+		return list.__getitem__(self, index).output
 
 	def __add__(self, jobs):
 		list.__add__(self, jobs)
-		for job in jobs:
-			self.check_type_job(job)
-			self.q.put(job)
+		self._add_to_queue(jobs)
 
-	def append(self, job):
+	def __iter__(self):
+		for job in self.jobs:
+			yield job.output
+
+	def jobs(self, index):				# Returns the job that executed the function
+		return list.__getitem__(self, index)
+
+	def append(self, funct, args=[], priority=0):
+		job = Job(funct, args, priority)
 		self.q.put(job)
 		list.append(self, job)
-
-	def add_job(self, funct, args=[], priority=0):
-		job = Job(funct, args, priority)
-		self.append(job)
 
 	def start(self):
 		for thread in self.threads:
@@ -47,6 +45,23 @@ class Batch(list):
 		for thread in self.threads:
 			thread.join()
 
-	def check_type_job(self, job):
+	def clear(self, jobs = []):
+		list.__init__(self, jobs)
+		if not self.priority:
+			self.q = queue.Queue()
+		else:
+			self.q = queue.PriorityQUeue()
+
+	def _add_to_queue(self, jobs):
+		for job in jobs:
+			self._check_type_job(job)
+			self.q.put(job)
+
+	def _init_threads(self, num_threads):
+		self.threads = []
+		for n in range(num_threads):
+			self.threads.append(Worker(self.q))
+
+	def _check_type_job(self, job):
 		if not isinstance(job, Job):
 			raise TypeError('job is not of type %s', Job)

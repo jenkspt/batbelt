@@ -1,7 +1,7 @@
 import threading
 import queue
 
-from job import Job
+from .job import Job
 
 class Worker(threading.Thread):
     def __init__(self, q):
