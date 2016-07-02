@@ -1,38 +1,27 @@
 Batbelt
---------
+=========================
 
 Example:
-```python
-import random
-import time
-random.seed(time.time())
-def print_stuff(index):
-	r = random.random() 
-	time.sleep(random)
-	print('Index:{}, Random:{}'.format(index, r))
-	return (index, r)
-```
+.. code-block:: python
+    import requests
+    from batbelt import Batch
 
-```python
->>> from batbelt import Batch
->>> batch = Batch(num_threads=4)
->>> for i in range(8):
-		batch.append(print_stuff, args=[i])
->>> batch.start()
->>> batch.join()
->>> for i in batch:
-		print(i)
-```
+    urls=['https://google.com',
+        'https://facebook.com',
+        'https://www.amazon.com',
+        'https://apple.com',
+        'https://github.com/',
+        'https://uber.com',
+        'https://tesla.com',
+        'https://yahoo.com', 
+        'https://microsoft.com', 
+        'https://youtube.com'] 
 
-Priority Queue Example:
-```python
->>> batch = Batch(num_threads=3, priority=True)
->>> x = random.shuffle([i for i in range(12)])		# Random permutation
->>> print(x)
->>> for i in x:
-		batch.append(print_stuff, args=[i], priority=i)
->>> batch.start()
->>> batch.join()
->>> for i in batch:
-		print(i)
-```
+    batch = Batch(num_threads=10)
+    for url in urls:
+        batch.append(requests.head, args=[url])
+    
+    batch.start()
+    batch.join()
+    for r in batch:
+    print(r.url, r.status_code)
