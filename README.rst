@@ -25,13 +25,14 @@ def print_stuff(index):
 ```
 
 Priority Queue Example:
-```
+```python
 >>> batch = Batch(num_threads=3, priority=True)
->>> x = random.shuffle([i for i in range(12)])
+>>> x = random.shuffle([i for i in range(12)])		# Random permutation
 >>> print(x)
 >>> for i in x:
 		batch.append(print_stuff, args=[i], priority=i)
 >>> batch.start()
 >>> batch.join()
->>> for i in batch
+>>> for i in batch:
 		print(i)
+```
